@@ -12,12 +12,19 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
+        $defaultAddress = $user->addresses()->where('is_default', true)->first();
+
+        if ($defaultAddress) {
+            $formattedAddress = $defaultAddress->full_address . ', Kec. ' . $defaultAddress->district . ', ' . $defaultAddress->city . ' ' . $defaultAddress->postal_code;
+        } else {
+            $formattedAddress = 'Belum ada alamat yang terdaftar.';
+        }
         return [
             'profile' => [
                 'name' => $user->name,
                 'email' => $user->email,
                 'phone' => $user->phone ?? 'N/A',
-                'address' => $user->address ?? 'Jl. Kebon Sirih No. 123, Menteng, Jakarta Pusat, DKI Jakarta 10340',
+                'address' => $formattedAddress,
                 'member_since' => optional($user->created_at)->format('M Y') ?? 'Jan 2023',
             ],
             'stats' => [
@@ -39,6 +46,10 @@ class ProfileController extends Controller
     public function edit()
     {
         return view('profile.edit', $this->profileData());
+    }
+
+    public function changePassword() {
+        return view('profile.password', $this->profileData());
     }
 
     public function update(ProfileUpdateRequest $request)

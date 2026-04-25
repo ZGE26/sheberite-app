@@ -9,7 +9,7 @@
     </h3>
 
     <div class="mt-6 space-y-3">
-        <a href="#"
+        <a href="{{ route('profile.password') }}"
             class="group flex items-center justify-between rounded-2xl bg-[#F4F5F1] p-4 transition-all duration-200 hover:bg-[#EAECE6] hover:shadow-sm">
 
             <div class="flex items-center gap-4">

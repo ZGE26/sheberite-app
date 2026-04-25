@@ -1,4 +1,4 @@
-<x-profile-layout :back-url="route('profile.index')">
+<x-app-layout :backUrl="route('profile.index')">
     <x-slot name="header">
         <h2 class="text-2xl font-bold tracking-tight text-emerald-900">
             Edit Profile
@@ -22,7 +22,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('profile-form');
             const submitBtn = document.getElementById('submit-button');
-            const inputs = form.querySelectorAll('.form-input-watch'); // Pakai class baru ini
+            const inputs = form.querySelectorAll('.form-input-watch');
 
             const initialValues = {};
             inputs.forEach(input => {
@@ -67,4 +67,4 @@
             });
         </script>
     @endif
-</x-profile-layout>
+</x-app-layout>

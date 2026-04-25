@@ -1,11 +1,11 @@
-<x-profile-layout>
+<x-app-layout>
     <x-slot name="header">
         <h2 class="text-2xl font-bold tracking-tight text-emerald-900">
             Profile Saya
         </h2>
     </x-slot>
 
-    <div class="space-y-6">
+    <div class="space-y-6 w-full">
         <x-profile.profile-header-card :profile="$profile" />
 
         <section class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -40,4 +40,4 @@
             <x-profile.help-card />
         </section>
     </div>
-</x-profile-layout>
+</x-app-layout>

@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 #[Fillable(['name', 'email', 'password', 'phone', 'role'])]
 #[Hidden(['password', 'remember_token'])]
@@ -19,14 +18,18 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    public function individu(): HasOne
-    {
-        return $this->hasOne(Individu::class);
-    }
 
     public function addresses(): HasMany
     {
         return $this->hasMany(Address::class);
+    }
+
+    public function communityDetails() { 
+        return $this->hasOne(CommunityDetails::class);
+    }
+
+    public function businessDetail() {
+        return $this->hasOne(BusinessDetail::class);
     }
 
     /**

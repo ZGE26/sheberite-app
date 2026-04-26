@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Illuminate\Validation\Rule;
 
 class RegisteredUserController extends Controller
 {
@@ -38,10 +39,18 @@ class RegisteredUserController extends Controller
             'phone' => ['required', 'string', 'min:10', 'max:20'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
 
-            'city' => ['required', 'string', 'max:255'],
-            'district' => ['required', 'string', 'max:255'],
-            'postal_code' => ['required', 'string', 'max:10'],
-            'full_address' => ['required', 'string'],
+            'city' => ['required_unless:role,unit_bisnis', 'string', 'max:255', 'nullable'],
+            'district' => ['required_unless:role,unit_bisnis', 'string', 'max:255', 'nullable'],
+            'postal_code' => ['required_unless:role,unit_bisnis', 'string', 'max:10', 'nullable'],
+            'full_address' => ['required_unless:role,unit_bisnis', 'string', 'nullable'],
+
+
+            'community_name' => ['required_if:role,komunitas', 'string', 'max:255', 'nullable'],
+            'bio_community' => ['nullable', 'string'],
+
+            'business_name' => ['required_if:role,unit_bisnis', 'string', 'max:255', 'nullable'],
+            'category' => ['required_if:role,unit_bisnis', 'string', 'nullable'],
+            'nib_file' => ['required_if:role,unit_bisnis', 'file', 'mimes:pdf', 'max:5120', 'nullable'],
         ]);
 
         $user = DB::transaction(function () use ($request) {
@@ -54,24 +63,40 @@ class RegisteredUserController extends Controller
                 'password' => Hash::make($request->password),
             ]);
 
-            $newUser->addresses()->create([
-                'label' => 'Alamat Utama',
-                'receiver_name' => $newUser->name,
-                'phone_number' => $newUser->phone,
-                'city' => $request->city,
-                'district' => $request->district,
-                'postal_code' => $request->postal_code,
-                'full_address' => $request->full_address,
-                'is_default' => true,
-            ]);
+            if ($request->role !== 'unit_bisnis') {
+                $newUser->addresses()->create([
+                    'label' => 'Alamat Utama',
+                    'receiver_name' => $newUser->name,
+                    'phone_number' => $newUser->phone,
+                    'city' => $request->city,
+                    'district' => $request->district,
+                    'postal_code' => $request->postal_code,
+                    'full_address' => $request->full_address,
+                    'is_default' => true,
+                ]);
+            }
 
-            // if ($request->role === 'individu') {
-            //     $newUser->individu()->create([]);
-            // } elseif ($request->role === 'komunitas') {
-            //     $newUser->komunitas()->create([]);
-            // } elseif ($request->role === 'unit_bisnis') {
-            //     $newUser->unitBisnis()->create([]);
-            // }
+            // Simpan Detail Komunitas
+            if ($request->role === 'komunitas') {
+                $newUser->communityDetails()->create([
+                    'community_name' => $request->community_name,
+                    'bio_community' => $request->bio_community,
+                ]);
+            }
+            elseif ($request->role === 'unit_bisnis') {
+                $filePath = null;
+
+                if ($request->hasFile('nib_file')) {
+                    $filePath = $request->file('nib_file')->store('documents/nib', 'public');
+                }
+
+                $newUser->businessDetail()->create([
+                    'business_name' => $request->business_name,
+                    'category' => $request->category,
+                    'nib_file' => $filePath,
+                    'is_activate' => false,
+                ]);
+            }
 
             return $newUser;
         });

@@ -30,6 +30,7 @@
             <label for="phone" class="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-500">Nomor
                 Telepon</label>
             <input id="phone" name="phone" type="text" value="{{ old('phone', $profile['phone']) }}"
+                inputmode="numeric" maxlength="15" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                 class="form-input w-full rounded-2xl border-0 bg-slate-50 px-4 py-3 text-sm text-slate-700 ring-1 ring-inset ring-slate-100 focus:ring-2 focus:ring-emerald-500 form-input-watch" />
         </div>
     </div>

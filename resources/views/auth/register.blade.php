@@ -119,8 +119,11 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div>
                     <x-input-label for="phone" :value="__('Nomor HP')" />
-                    <x-text-input id="phone" x-model="phone" class="block mt-1 w-full bg-gray-50" type="tel"
-                        name="phone" required />
+                    <x-text-input id="phone" x-model="phone" class="block mt-1 w-full bg-gray-50" type="text"
+                        name="phone" required inputmode="numeric"
+                        pattern="[0-9]*"
+                        onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                        placeholder="Contoh: 08123456789" />
                     <x-input-error :messages="$errors->get('phone')" class="mt-2" />
                 </div>
                 <div>

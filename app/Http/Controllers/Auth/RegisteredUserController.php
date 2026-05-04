@@ -36,7 +36,7 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'role' => ['required', 'in:individu,komunitas,unit_bisnis'],
-            'phone' => ['required', 'string', 'min:10', 'max:20'],
+            'phone' => ['required', 'regex:/^[0-9]+$/', 'min:10', 'max:15'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
 
             'city' => ['required_unless:role,unit_bisnis', 'string', 'max:255', 'nullable'],
@@ -82,8 +82,7 @@ class RegisteredUserController extends Controller
                     'community_name' => $request->community_name,
                     'bio_community' => $request->bio_community,
                 ]);
-            }
-            elseif ($request->role === 'unit_bisnis') {
+            } elseif ($request->role === 'unit_bisnis') {
                 $filePath = null;
 
                 if ($request->hasFile('nib_file')) {
